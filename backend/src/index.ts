@@ -12,6 +12,7 @@ import roomsRoutes from "./routes/rooms.routes.js";
 import auditRoutes from "./routes/audit.routes.js";
 import notificationsRoutes from "./routes/notifications.routes.js";
 import schedulesRoutes from "./routes/schedules.routes.js";
+import googleCalendarRoutes from "./routes/google-calendar.routes.js";
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/schedules", schedulesRoutes);
+app.use("/api/google-calendar", googleCalendarRoutes);
 app.use("/api/tasks", tasksRoutes);
 app.use("/api/conflicts", conflictsRoutes);
 app.use("/api/stats", statsRoutes);

@@ -53,6 +53,12 @@ export const SchedulesService = {
   },
 };
 
+export const GoogleCalendarService = {
+  status: async () => (await apiClient.get<{ configured: boolean; connected: boolean; accountEmail: string | null }>("/google-calendar/status")).data,
+  getEvents: async (params: { startDate: string; endDate: string }) => (await apiClient.get<any[]>("/google-calendar/events", { params })).data,
+  connect: () => { window.location.href = "/api/google-calendar/connect"; },
+};
+
 export const TasksService = {
   getAll: async (params?: Record<string, any>) => {
     const res = await apiClient.get<TaskDTO[]>("/tasks", { params });
