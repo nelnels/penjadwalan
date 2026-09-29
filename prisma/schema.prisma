@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String
+  email         String          @unique
+  password      String
+  role          String          @default("MEMBER") // ADMIN, MANAGER, MEMBER
+  department    String          @default("Umum")
+  position      String          @default("Staff")
+  avatar        String?
+  phone         String?
+  isActive      Boolean         @default(true)
+  refreshToken  String?
+  createdEvents Event[]         @relation("CreatedByUser")
+  picEvents     EventAssignee[]
+  tasks         Task[]
+  activities    AuditLog[]
+  notifications Notification[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Event {
+  id             String          @id @default(cuid())
+  title          String
+  description    String?
+  category       String          @default("INTERNAL_TEAM") // SEMINAR_WORKSHOP, RAPAT_KOORDINASI, DEADLINE_PROYEK, KEGIATAN_SOSIAL, KOMPETISI_LOMBA, INTERNAL_TEAM
+  priority       String          @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status         String          @default("UPCOMING") // UPCOMING, IN_PROGRESS, COMPLETED, POSTPONED, CANCELLED
+  startDate      DateTime
+  endDate        DateTime
+  isAllDay       Boolean         @default(false)
+  isRecurring    Boolean         @default(false)
+  recurrenceRule String?         // NONE, DAILY, WEEKLY, MONTHLY
+  locationType   String          @default("OFFLINE") // OFFLINE, ONLINE, HYBRID
+  locationName   String          @default("Ruang Rapat Utama")
+  locationUrl    String?
+  department     String          @default("Semua Divisi")
+  budget         Float?          @default(0)
+  progress       Int             @default(0) // 0-100
+  color          String          @default("#3B82F6")
+  createdById    String
+  createdBy      User            @relation("CreatedByUser", fields: [createdById], references: [id], onDelete: Cascade)
+  assignees      EventAssignee[]
+  tasks          Task[]
+  milestones     Milestone[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model EventAssignee {
+  id          String   @id @default(cuid())
+  eventId     String
+  userId      String
+  roleInEvent String   @default("ANGGOTA") // PIC_UTAMA, KOORDINATOR, ANGGOTA, NOTULIS, DOKUMENTASI, MODERATOR
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([eventId, userId])
+}
+
+model Task {
+  id             String         @id @default(cuid())
+  title          String
+  description    String?
+  status         String         @default("TODO") // TODO, IN_PROGRESS, REVIEW, DONE
+  priority       String         @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  dueDate        DateTime?
+  estimatedHours Float?
+  eventId        String?
+  event          Event?         @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  assigneeId     String?
+  assignee       User?          @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+  order          Int            @default(0)
+  subtasks       TaskSubitem[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model TaskSubitem {
+  id          String   @id @default(cuid())
+  taskId      String
+  title       String
+  isCompleted Boolean  @default(false)
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  eventId     String
+  title       String
+  targetDate  DateTime
+  isCompleted Boolean  @default(false)
+  order       Int      @default(0)
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action       String   // CREATE_EVENT, UPDATE_EVENT, RESCHEDULE, COMPLETE_TASK, DELETE_EVENT, CONFLICT_DETECTED, etc.
+  description  String
+  targetEntity String?  // Event, Task, User
+  targetId     String?
+  createdAt    DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, WARNING, SUCCESS, URGENT
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
+model ResourceRoom {
+  id          String   @id @default(cuid())
+  name        String
+  capacity    Int      @default(20)
+  type        String   @default("ROOM") // ROOM, ZOOM_ACCOUNT, EQUIPMENT, HYBRID
+  facility    String?  // e.g. "Proyektor, Sound System, AC, WiFi"
+  status      String   @default("AVAILABLE") // AVAILABLE, MAINTENANCE
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  color       String   @default("#3B82F6")
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
