@@ -1,5 +1,5 @@
 import axios from "axios";
-import { EventDTO, TaskDTO, DashboardStats, ScheduleConflict, UserDTO, AuditLogDTO } from "../lib/types";
+import { EventDTO, TaskDTO, DashboardStats, ScheduleConflict, UserDTO, AuditLogDTO, HealthSummaryDTO } from "../lib/types";
 
 export interface PaginatedSchedules {
   data: EventDTO[];
@@ -57,6 +57,10 @@ export const GoogleCalendarService = {
   status: async () => (await apiClient.get<{ configured: boolean; connected: boolean; accountEmail: string | null }>("/google-calendar/status")).data,
   getEvents: async (params: { startDate: string; endDate: string }) => (await apiClient.get<any[]>("/google-calendar/events", { params })).data,
   connect: () => { window.location.href = "/api/google-calendar/connect"; },
+};
+
+export const HealthService = {
+  getSummary: async (params?: { from?: string; to?: string }) => (await apiClient.get<HealthSummaryDTO>("/health/summary", { params })).data,
 };
 
 export const TasksService = {

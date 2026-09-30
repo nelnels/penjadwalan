@@ -155,3 +155,24 @@ export interface DashboardStats {
   picWorkload: { id: string; name: string; fullName: string; department: string; avatar?: string | null; eventsCount: number; tasksCount: number }[];
   priorityBreakdown: { priority: string; key?: string; count: number; color?: string }[];
 }
+
+export interface HealthDailySummaryDTO {
+  id: string;
+  date: string;
+  steps: number;
+  activeEnergyKcal: number;
+  exerciseMinutes: number;
+  standHours: number;
+  distanceMeters: number;
+  restingHeartRate?: number | null;
+  walkingHeartRate?: number | null;
+  sleepHours?: number | null;
+  syncedAt: string;
+}
+
+export interface HealthSummaryDTO {
+  daily: HealthDailySummaryDTO[];
+  latest: HealthDailySummaryDTO | null;
+  totals: Pick<HealthDailySummaryDTO, "steps" | "activeEnergyKcal" | "exerciseMinutes" | "distanceMeters">;
+  connected: boolean;
+}
