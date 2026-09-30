@@ -21,7 +21,7 @@ export default function HealthTrackerView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { showToast } = useNotificationStore();
-  const { currentUser, switchUser } = useAuthStore();
+  const { switchUser } = useAuthStore();
 
   const loadSummary = async () => {
     setLoading(true);
@@ -61,7 +61,7 @@ export default function HealthTrackerView() {
         </div>
       </section>
 
-      {loading ? <HealthSkeleton /> : error ? <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100"><h2 className="font-bold">Data belum tersedia</h2><p className="mt-1 text-sm">{error}</p>{error.startsWith("Masuk") && <button onClick={async () => { await switchUser(currentUser.id); await loadSummary(); }} className="mt-4 rounded-xl bg-amber-800 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-amber-900 dark:bg-amber-200 dark:text-amber-950 dark:hover:bg-amber-100">Gunakan akun demo</button>}</section> : <>
+      {loading ? <HealthSkeleton /> : error ? <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100"><h2 className="font-bold">Data belum tersedia</h2><p className="mt-1 text-sm">{error}</p>{error.startsWith("Masuk") && <button onClick={async () => { await switchUser(""); await loadSummary(); }} className="mt-4 rounded-xl bg-amber-800 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-amber-900 dark:bg-amber-200 dark:text-amber-950 dark:hover:bg-amber-100">Gunakan akun demo</button>}</section> : <>
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {metricCards.map(({ label, value, unit, icon: Icon, color, tint }) => <article key={label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"><div className={`mb-5 grid h-9 w-9 place-items-center rounded-xl ${tint} ${color}`}><Icon className="h-4 w-4" /></div><p className="text-xs font-medium text-slate-500">{label}</p><p className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{value}<span className="ml-1 text-sm font-medium text-slate-500">{unit}</span></p></article>)}
         </section>
