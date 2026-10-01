@@ -176,3 +176,12 @@ export interface HealthSummaryDTO {
   totals: Pick<HealthDailySummaryDTO, "steps" | "activeEnergyKcal" | "exerciseMinutes" | "distanceMeters">;
   connected: boolean;
 }
+
+export interface HabitLogDTO { id: string; date: string; completedAt: string; }
+export interface HabitDTO {
+  id: string;
+  name: string;
+  color: string;
+  targetPerWeek: number;
+  logs: HabitLogDTO[];
+}

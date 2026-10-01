@@ -23,6 +23,7 @@ model User {
   activities    AuditLog[]
   notifications Notification[]
   healthSummaries HealthDailySummary[]
+  habits          Habit[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
@@ -200,4 +201,31 @@ model HealthDailySummary {
   @@unique([userId, date])
   @@index([userId, date])
   @@map("health_daily_summaries")
+}
+
+model Habit {
+  id            String     @id @default(cuid())
+  userId        String
+  name          String
+  color         String     @default("#2563EB")
+  targetPerWeek Int        @default(7)
+  archived      Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs          HabitLog[]
+
+  @@index([userId, archived])
+  @@map("habits")
+}
+
+model HabitLog {
+  id          String   @id @default(cuid())
+  habitId     String
+  date        DateTime @db.Date
+  completedAt DateTime @default(now())
+  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@map("habit_logs")
 }

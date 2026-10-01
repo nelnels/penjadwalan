@@ -1,5 +1,5 @@
 import axios from "axios";
-import { EventDTO, TaskDTO, DashboardStats, ScheduleConflict, UserDTO, AuditLogDTO, HealthSummaryDTO } from "../lib/types";
+import { EventDTO, TaskDTO, DashboardStats, ScheduleConflict, UserDTO, AuditLogDTO, HealthSummaryDTO, HabitDTO } from "../lib/types";
 
 export interface PaginatedSchedules {
   data: EventDTO[];
@@ -61,6 +61,13 @@ export const GoogleCalendarService = {
 
 export const HealthService = {
   getSummary: async (params?: { from?: string; to?: string }) => (await apiClient.get<HealthSummaryDTO>("/health/summary", { params })).data,
+};
+
+export const HabitsService = {
+  getAll: async (date?: string) => (await apiClient.get<{ habits: HabitDTO[] }>("/habits", { params: { date } })).data,
+  create: async (data: { name: string; color: string; targetPerWeek: number }) => (await apiClient.post<HabitDTO>("/habits", data)).data,
+  toggle: async (id: string, date: string) => (await apiClient.post<{ completed: boolean }>(`/habits/${id}/toggle`, { date })).data,
+  archive: async (id: string) => (await apiClient.delete(`/habits/${id}`)).data,
 };
 
 export const TasksService = {

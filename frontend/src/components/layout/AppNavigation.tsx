@@ -1,9 +1,11 @@
-import { Activity, CalendarDays, List, Moon, Sun } from "lucide-react";
+import { Activity, CalendarDays, List, ListTodo, Moon, Repeat2, Sun } from "lucide-react";
 import { useThemeStore } from "../../stores/themeStore";
 
 const items = [
   { href: "/schedules", label: "Schedule", icon: List },
   { href: "/schedules/calendar", label: "Kalender", icon: CalendarDays },
+  { href: "/todo", label: "To-do", icon: ListTodo },
+  { href: "/habits", label: "Habit", icon: Repeat2 },
   { href: "/health", label: "Health Tracker", icon: Activity },
 ];
 
