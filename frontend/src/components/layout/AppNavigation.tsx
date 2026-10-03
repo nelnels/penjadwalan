@@ -1,4 +1,4 @@
-import { Activity, CalendarDays, List, ListTodo, Moon, Repeat2, Sun } from "lucide-react";
+import { Activity, CalendarDays, List, ListTodo, LogIn, Moon, Repeat2, Sun } from "lucide-react";
 import { useThemeStore } from "../../stores/themeStore";
 
 const items = [
@@ -9,7 +9,11 @@ const items = [
   { href: "/health", label: "Health Tracker", icon: Activity },
 ];
 
-export default function AppNavigation() {
+interface AppNavigationProps {
+  onOpenAuthModal: () => void;
+}
+
+export default function AppNavigation({ onOpenAuthModal }: AppNavigationProps) {
   const { theme, toggleTheme } = useThemeStore();
   const currentPath = window.location.pathname;
 
@@ -31,9 +35,15 @@ export default function AppNavigation() {
             );
           })}
         </nav>
-        <button onClick={toggleTheme} className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Ubah tema">
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          <button onClick={onOpenAuthModal} className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-blue-200 px-3 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-50 dark:border-blue-900/70 dark:text-blue-300 dark:hover:bg-blue-950/40" aria-label="Masuk atau daftar akun">
+            <LogIn className="h-4 w-4" />
+            <span className="hidden sm:inline">Masuk</span>
+          </button>
+          <button onClick={toggleTheme} className="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" aria-label="Ubah tema">
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
     </header>
   );
