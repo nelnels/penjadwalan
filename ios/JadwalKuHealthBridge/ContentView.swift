@@ -52,7 +52,8 @@ struct ContentView: View {
             let client = APIClient(baseURL: backendURL)
             if token.isEmpty { token = try await client.login(email: email, password: password) }
             try await health.requestReadAccess()
-            try await client.sync(summaries: health.latestSevenDays(), token: token)
+            let summaries = try await health.latestSevenDays()
+            try await client.sync(summaries: summaries, token: token)
             message = "Berhasil disinkronkan. Buka Health Tracker di JadwalKu."
         } catch { message = error.localizedDescription }
     }
